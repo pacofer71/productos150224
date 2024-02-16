@@ -1,9 +1,9 @@
 <div>
-    <x-button>
+    <x-button wire:click="$set('openCrear', true)">
         <i class='fas fa-add mr-1'></i> NUEVO
     </x-button>
     <!-- Modal para crear -->
-    <x-dialog-modal>
+    <x-dialog-modal wire:model="openCrear">
         <x-slot name="title">
             Crear Producto
         </x-slot>

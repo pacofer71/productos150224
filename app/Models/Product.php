@@ -34,6 +34,14 @@ class Product extends Model
         );
     }
 
+    public function getTagsId():array{
+        $tags=[];
+        foreach($this->tags as $tag){
+            $tags[]=$tag->id;
+        }
+        return $tags;
+    }
+
 
 
 

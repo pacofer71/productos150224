@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Product;
 use App\Models\Tag;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -10,6 +11,8 @@ use Livewire\WithFileUploads;
 class CreateProduct extends Component
 {
     use WithFileUploads;
+
+    public bool $openCrear=false;
     
     #[Validate(['nullable', 'image', 'max:2048'])]
     public $imagen;
@@ -37,6 +40,23 @@ class CreateProduct extends Component
 
     public function store(){
         $this->validate();
+        $producto=Product::create([
+            'nombre'=>$this->nombre,
+            'descripcion'=>$this->descripcion,
+            'imagen'=>($this->imagen) ? $this->imagen->store('productos') : 'noimage.png',
+            'pvp'=>$this->pvp,
+            'stock'=>$this->stock,
+            'disponible'=>($this->stock>0) ? "SI" : "NO",
+            'user_id'=>auth()->user()->id,
+        ]);
+        $producto->tags()->attach($this->tags);
+
+        $this->dispatch('producto-creado')->to(ShowProducts::class);
+        $this->dispatch('mensaje', 'Se guardó el producto');
+        $this->cancelarCrear();
+    }
+    public function cancelarCrear(){
+        $this->reset(['openCrear', 'nombre', 'descripcion', 'imagen', 'pvp', 'stock', 'tags']);
     }
 
 
